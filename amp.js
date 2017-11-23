@@ -1,19 +1,17 @@
-navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+function gotStream(stream) {
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    var audioContext = new AudioContext();
 
-var aCtx;
-var analyser;
-var microphone;
-if (navigator.getUserMedia) {
-  navigator.getUserMedia({audio: true}, function(stream) {
-    console.log("loading audio...");
-    aCtx = new AudioContext();
-    analyser = aCtx.createAnalyser();
-    microphone = aCtx.createMediaStreamSource(stream);
-    microphone.connect(analyser);
-    var destination = aCtx.destination;
-    analyser.connect(destination);
-    console.log("loaded audio.");
-  }, function() { console.log("Error 003."); });
+    // Create an AudioNode from the stream.
+    var mediaStreamSource = audioContext.createMediaStreamSource(stream);
+
+    // Connect it to the destination to hear yourself (or any other node for processing!)
+    mediaStreamSource.connect(audioContext.destination);
 }
 
-console.log("loaded script.");
+function onError() {
+  console.log("Error accessing microphone.");
+}
+
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+navigator.getUserMedia({audio:true}, gotStream, onError);
