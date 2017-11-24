@@ -41,6 +41,3 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
 navigator.getUserMedia({audio:true}, gotStream, onError);
 
 window.addEventListener('touchstart', unlock, false);
-
-// debug
-window.addEventListener('click', unlock, false);
