@@ -1,7 +1,7 @@
 var audioContext;
 
 function gotStream(stream) {
-    //window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
     audioContext = new AudioContext();
     var mediaStreamSource = audioContext.createMediaStreamSource(stream);
     mediaStreamSource.connect(audioContext.destination);
