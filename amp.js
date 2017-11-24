@@ -5,7 +5,6 @@ function gotStream(stream) {
     audioContext = new AudioContext();
     var mediaStreamSource = audioContext.createMediaStreamSource(stream);
     mediaStreamSource.connect(audioContext.destination);
-    alert(navigator.mediaDevices.getSupportedConstraints().latency);
 }
 
 function onError() {
