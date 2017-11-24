@@ -30,7 +30,7 @@ function unlock() {
       audioContext.resume();
 
       setTimeout(function () {
-        if (ctx.state === 'running') {
+        if (audioContext.state === 'running') {
           document.body.removeEventListener('touchend', resume, false);
         }
       }, 0);
