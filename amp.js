@@ -1,23 +1,30 @@
+var audioContext;
+
 // for iOS
-window.addEventListener('touchstart', function() {
+var isUnlocked = false;
+function unlock() {
+  if (isUnlocked) return;
 
-  // create empty buffer
-  var buffer = myContext.createBuffer(1, 1, 22050);
-  var source = myContext.createBufferSource();
+  // create empty buffer and play it
+  var buffer = audioContext.createBuffer(1, 1, 22050);
+  var source = audioContext.createBufferSource();
   source.buffer = buffer;
+  source.connect(audioContext.destination);
+  source.start(0);
 
-  // connect to output (your speakers)
-  source.connect(myContext.destination);
+  // by checking the play state after some time, we know if we're really unlocked
+  setTimeout(function() {
+    if((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
+      isUnlocked = true;
+      document.body.innerHTML = "sound is unlocked!";
+    }
+  }, 0);
 
-  // play the file
-  source.noteOn(0);
-  alert('attempting to unlock audio...');
-
-}, false);
+}
 
 function gotStream(stream) {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    var audioContext = new AudioContext();
+    audioContext = new AudioContext();
 
     // Create an AudioNode from the stream.
     var mediaStreamSource = audioContext.createMediaStreamSource(stream);
@@ -32,3 +39,8 @@ function onError() {
 
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
 navigator.getUserMedia({audio:true}, gotStream, onError);
+
+window.addEventListener('touchstart', unlock, false);
+
+// debug
+window.addEventListener('click', unlock, false);
