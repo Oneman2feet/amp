@@ -1,67 +1,21 @@
 var audioContext;
 
-// for iOS
-/*
-var isUnlocked = false;
-function unlock() {
-  if (isUnlocked) return;
-
-  // create empty buffer and play it
-  var buffer = audioContext.createBuffer(1, 1, 22050);
-  var source = audioContext.createBufferSource();
-  source.buffer = buffer;
-  source.connect(audioContext.destination);
-  source.start(0);
-
-  // by checking the play state after some time, we know if we're really unlocked
-  setTimeout(function() {
-    if((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
-      isUnlocked = true;
-      document.body.innerHTML = "Sound is unlocked!";
-    }
-  }, 0);
-}
-*/
-
-// context state at this time is `undefined` in iOS8 Safari
-function unlock() {
-  if (audioContext.state === 'suspended') {
-    var resume = function () {
-      audioContext.resume();
-
-      setTimeout(function () {
-        if (audioContext.state === 'running') {
-          document.body.removeEventListener('touchend', resume, false);
-        }
-      }, 0);
-    };
-
-    document.body.addEventListener('touchend', resume, false);
-  }
-}
-
 function gotStream(stream) {
-    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    //window.AudioContext = window.AudioContext || window.webkitAudioContext;
     audioContext = new AudioContext();
-
-    // Create an AudioNode from the stream.
     var mediaStreamSource = audioContext.createMediaStreamSource(stream);
-
-    // Connect it to the destination to hear yourself (or any other node for processing!)
     mediaStreamSource.connect(audioContext.destination);
     unlock();
-    alert(audioContext.baseLatency);
+    alert(audioContext.outputLatency);
 }
 
 function onError() {
   console.log("Error accessing microphone.");
 }
 
-navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
-navigator.getUserMedia({audio:true}, gotStream, onError);
-
-//window.addEventListener('touchstart', unlock, false);
-
+function start() {
+  navigator.getUserMedia({audio:true}, gotStream, onError);
+}
 
 // ios unlock
 /*
@@ -140,3 +94,24 @@ function processStream(stream) {
 }
 
 */
+
+
+// for iOS audio unlocking
+var isUnlocked = false;
+function unlock() {
+  if (isUnlocked) return;
+
+  // create empty buffer and play it
+  var buffer = audioContext.createBuffer(1, 1, 22050);
+  var source = audioContext.createBufferSource();
+  source.buffer = buffer;
+  source.connect(audioContext.destination);
+  source.start(0);
+
+  // by checking the play state after some time, we know if we're really unlocked
+  setTimeout(function() {
+    if((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
+      isUnlocked = true;
+    }
+  }, 0);
+}
