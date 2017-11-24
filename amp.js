@@ -3,6 +3,8 @@ var audioContext;
 // for iOS
 var isUnlocked = false;
 function unlock() {
+  console.log("attempting to unlock");
+  
   if (isUnlocked) return;
 
   // create empty buffer and play it
@@ -17,6 +19,7 @@ function unlock() {
     if((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
       isUnlocked = true;
       document.body.innerHTML = "sound is unlocked!";
+      alert("audio unlocked");
     }
   }, 0);
 
