@@ -3,8 +3,8 @@ var audioContext;
 // for iOS
 var isUnlocked = false;
 function unlock() {
-  console.log("attempting to unlock");
-  
+  alert("attempting to unlock");
+
   if (isUnlocked) return;
 
   // create empty buffer and play it
